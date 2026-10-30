@@ -1,0 +1,760 @@
+  <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Profile — FictionFlix</title>
+  
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    :root {
+      --bg-dark: #07080a;
+      --card-bg: #12141a;
+      --card-border: rgba(255, 255, 255, 0.08);
+      --red-primary: #e50914;
+      --red-hover: #ff1e27;
+      --gold-accent: #d4af37;
+      --text-white: #ffffff;
+      --text-muted: #9a9ab0;
+      --status-active: #10b981;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-white);
+      padding-bottom: 60px;
+    }
+
+    /* FictionFlix Header Navbar */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 32px;
+      background: rgba(5, 5, 5, 0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    /* FictionFlix Brand Logo CSS */
+    .brand-logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 22px;
+      font-weight: 900;
+      color: #fff;
+      text-decoration: none;
+      margin-left: 12px;
+    }
+
+    .brand-logo img {
+      display: block;
+      width: 152px;
+      height: 50px;
+      object-fit: contain;
+      mix-blend-mode: screen;
+      filter: drop-shadow(0 0 8px rgba(229, 9, 20, 0.25));
+    }
+
+    .brand-logo span {
+      color: #e50914; /* var(--red-primary) */
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 20px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 14px;
+      transition: color 0.3s;
+    }
+
+    .nav-links a:hover, .nav-links a.active {
+      color: var(--text-white);
+    }
+
+    /* Container Layout */
+    .container {
+      max-width: 1100px;
+      margin: 32px auto;
+      padding: 0 20px;
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 24px;
+    }
+
+    /* Card Box */
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 24px;
+    }
+
+    /* Sidebar Profile Card */
+    .profile-sidebar {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .avatar-wrapper {
+      position: relative;
+      width: 110px;
+      height: 110px;
+      margin-bottom: 16px;
+    }
+
+    .avatar-img {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      overflow: hidden;
+      border-radius: 50%;
+      border: 3px solid var(--gold-accent);
+      box-shadow: 0 0 15px rgba(212, 175, 55, 0.25);
+      display: grid;
+      place-items: center;
+      background: linear-gradient(145deg, #35252a, #101114);
+      color: #f4d27e;
+      font-size: 38px;
+      font-weight: 800;
+    }
+
+    .avatar-img img {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      inset: 0;
+      object-fit: cover;
+    }
+
+    .edit-avatar-btn {
+      position: absolute;
+      bottom: 2px;
+      right: 2px;
+      background: var(--red-primary);
+      border: none;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .edit-avatar-btn:hover {
+      transform: scale(1.1);
+    }
+
+    .avatar-upload-input {
+      display: none;
+    }
+
+    .user-name {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .user-email {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+
+    /* FictionFlix VIP Pass Badge */
+    .badge-ff-pass {
+      background: rgba(229, 9, 20, 0.15);
+      border: 1px solid var(--red-primary);
+      color: #ffffff;
+      padding: 5px 14px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 20px;
+      box-shadow: 0 0 10px rgba(229, 9, 20, 0.3);
+    }
+
+    .badge-ff-pass span {
+      color: var(--gold-accent);
+    }
+
+    /* Sidebar Navigation Menu */
+    .profile-menu {
+      width: 100%;
+      list-style: none;
+      border-top: 1px solid var(--card-border);
+      padding-top: 16px;
+    }
+
+    .profile-menu li {
+      margin-bottom: 8px;
+    }
+
+    .menu-btn {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      border-radius: 10px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: left;
+    }
+
+    .menu-btn:hover, .menu-btn.active {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-white);
+    }
+
+    .menu-btn.active {
+      border-left: 3px solid var(--red-primary);
+      border-radius: 0 10px 10px 0;
+    }
+
+    /* Content Headers */
+    .section-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-title i {
+      color: var(--gold-accent);
+    }
+
+    /* Profile Form Grid */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    label {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    input, select {
+      background: #090a0d;
+      border: 1px solid var(--card-border);
+      padding: 12px 16px;
+      border-radius: 8px;
+      color: white;
+      font-size: 14px;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: var(--gold-accent);
+    }
+
+    .btn-save {
+      background: var(--red-primary);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-save:hover {
+      background: var(--red-hover);
+    }
+
+    /* Subscription Card */
+    .subscription-box {
+      background: linear-gradient(135deg, rgba(229, 9, 20, 0.15), rgba(18, 20, 26, 0.95));
+      border: 1px solid rgba(212, 175, 55, 0.4);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .sub-info h3 {
+      font-size: 16px;
+      margin-bottom: 6px;
+    }
+
+    .sub-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 12px;
+    }
+
+    .sub-status.active {
+      background: rgba(16, 185, 129, 0.2);
+      color: var(--status-active);
+    }
+
+    .sub-status.inactive {
+      background: rgba(229, 9, 20, 0.2);
+      color: var(--red-primary);
+    }
+
+    .toggle-sub-btn {
+      padding: 8px 16px;
+      border-radius: 6px;
+      border: 1px solid var(--card-border);
+      background: rgba(255, 255, 255, 0.05);
+      color: white;
+      cursor: pointer;
+      font-size: 13px;
+      transition: all 0.2s;
+    }
+
+    .toggle-sub-btn:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+    .toggle-sub-btn:disabled {
+      cursor: not-allowed;
+      opacity: .55;
+    }
+
+    /* Media Grid */
+    .media-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    .media-card {
+      background: #090a0d;
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      overflow: hidden;
+      transition: transform 0.2s;
+    }
+
+    .media-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--gold-accent);
+    }
+
+    .media-thumb {
+      width: 100%;
+      height: 110px;
+      background: #1e2029;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .media-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .library-empty {
+      grid-column: 1 / -1;
+      color: var(--text-muted);
+      font-size: 13px;
+      padding: 8px 0;
+    }
+
+    .play-badge {
+      position: absolute;
+      background: rgba(0, 0, 0, 0.7);
+      color: var(--gold-accent);
+      border-radius: 50%;
+      padding: 8px;
+      display: flex;
+    }
+
+    .media-details {
+      padding: 12px;
+    }
+
+    .media-title {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .media-meta {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .divider {
+      border: none;
+      border-top: 1px solid var(--card-border);
+      margin: 32px 0;
+    }
+
+    @media (max-width: 768px) {
+      .brand-logo {
+        margin-left: 8px;
+      }
+      .brand-logo img {
+        width: 126px;
+        height: 42px;
+      }
+      .container {
+        grid-template-columns: 1fr;
+      }
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- FictionFlix Navbar Header -->
+  <header class="navbar">
+    <a href="/" class="brand-logo"><img src="{{ url_for('static', filename='logo.png') }}" alt="FictionFlix Logo"></a>
+    <ul class="nav-links">
+      <li><a href="/">Home</a></li>
+      <li><a href="#">Stories</a></li>
+      <li><a href="#">Discover</a></li>
+      <li><a href="#">Categories</a></li>
+      <li><a href="/User.html" class="active">My Profile</a></li>
+    </ul>
+  </header>
+
+  <div class="container">
+    
+    <!-- FictionFlix Profile Sidebar -->
+    <aside class="card profile-sidebar">
+      <div class="avatar-wrapper">
+        <div class="avatar-img" role="img" aria-label="{{ user.name }} profile avatar">
+          <span id="avatarInitial" {% if user.profile_image %}hidden{% endif %}>{{ user.name[:1]|upper }}</span>
+          <img id="profileAvatarImage" {% if user.profile_image %}src="{{ user.profile_image }}"{% endif %} alt="{{ user.name }} profile picture" {% if not user.profile_image %}hidden{% endif %}>
+        </div>
+        <input id="profileImageInput" class="avatar-upload-input" type="file" accept="image/avif,image/jpeg,image/png,image/webp" onchange="uploadProfileImage(event)">
+        <button class="edit-avatar-btn" type="button" aria-label="Change profile picture" title="Change profile picture" onclick="document.getElementById('profileImageInput').click()">
+          <i data-lucide="camera" style="width: 16px; height: 16px;"></i>
+        </button>
+      </div>
+
+      <h2 class="user-name" id="displayUsername">{{ user.name }}</h2>
+      <p class="user-email" id="displayEmail">{{ user.email }}</p>
+
+      <!-- FictionFlix Theme Badge -->
+      <span class="badge-ff-pass">
+        <i data-lucide="zap" style="width: 13px; height: 13px; color: #e50914;"></i> 
+        FICTION<span>FLIX</span> PASS
+      </span>
+
+      <ul class="profile-menu">
+        <li>
+          <button class="menu-btn active" onclick="document.getElementById('accountDetails').scrollIntoView({behavior:'smooth'})">
+            <i data-lucide="user" style="width: 18px; height: 18px;"></i> Profile Settings
+          </button>
+        </li>
+        <li>
+          <button class="menu-btn" onclick="document.getElementById('watchHistory').scrollIntoView({behavior:'smooth'})">
+            <i data-lucide="history" style="width: 18px; height: 18px;"></i> Watch History
+          </button>
+        </li>
+        <li>
+          <button class="menu-btn" onclick="document.getElementById('savedStories').scrollIntoView({behavior:'smooth'})">
+            <i data-lucide="bookmark" style="width: 18px; height: 18px;"></i> Saved Stories
+          </button>
+        </li>
+        <li>
+          <button type="button" class="menu-btn" onclick="logout()" style="color: var(--red-primary);">
+            <i data-lucide="log-out" style="width: 18px; height: 18px;"></i> Sign out
+          </button>
+        </li>
+      </ul>
+    </aside>
+
+    <!-- Main Content Box -->
+    <main class="card">
+      
+      <!-- FictionFlix Subscription Details -->
+      <section>
+        <h2 class="section-title">
+          <i data-lucide="shield-check"></i> Subscription & Pass Status
+        </h2>
+        <div class="subscription-box">
+          <div class="sub-info">
+            <h3>FictionFlix Pass</h3>
+            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 8px;">Subscription payments are not configured for this site.</p>
+            <span class="sub-status inactive" id="subStatusBadge">
+              <i data-lucide="info" style="width: 12px; height: 12px;"></i> Unavailable
+            </span>
+          </div>
+          <button class="toggle-sub-btn" type="button" disabled title="Payment processing is not configured.">Unavailable</button>
+        </div>
+      </section>
+
+      <!-- User Information Edit -->
+      <section id="accountDetails">
+        <h2 class="section-title">
+          <i data-lucide="user-cog"></i> Account Details
+        </h2>
+        <form onsubmit="event.preventDefault(); saveDetails();">
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Full Name</label>
+              <input type="text" id="inputName" value="{{ user.name }}" maxlength="80" required>
+            </div>
+            <div class="form-group">
+              <label>Email Address</label>
+              <input type="email" id="inputEmail" value="{{ user.email }}" maxlength="254" required>
+            </div>
+            <div class="form-group">
+              <label>Preferred Language</label>
+              <select id="preferredLanguage">
+                <option value="hi">Hindi (हिंदी)</option>
+                <option value="en">English</option>
+                <option value="bn">বাংলা</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Content Preference</label>
+              <select id="contentPreference">
+                <option value="horror-mystery">Horror & Mystery</option>
+                <option value="micro-vertical-drama">Micro Vertical Drama</option>
+              </select>
+            </div>
+          </div>
+          <button type="submit" class="btn-save">
+            <i data-lucide="save" style="width: 16px; height: 16px;"></i> Save Changes
+          </button>
+          <p id="profileStatus" role="status" aria-live="polite"></p>
+        </form>
+      </section>
+
+      <hr class="divider">
+
+      <!-- Watch History -->
+      <section id="watchHistory">
+        <h2 class="section-title">
+          <i data-lucide="play-circle"></i> Recent Watch History
+        </h2>
+        <div class="media-grid" id="watchHistoryGrid" aria-live="polite"></div>
+      </section>
+
+      <hr class="divider">
+
+      <!-- Saved Stories -->
+      <section id="savedStories">
+        <h2 class="section-title">
+          <i data-lucide="bookmark"></i> Saved Stories (Bookmarked)
+        </h2>
+        <div class="media-grid" id="savedStoriesGrid" aria-live="polite"></div>
+      </section>
+
+    </main>
+
+  </div>
+
+  <script>
+    lucide.createIcons();
+
+    function showProfileMessage(message) {
+      document.getElementById('profileStatus').textContent = message;
+    }
+
+    async function uploadProfileImage(event) {
+      const file = event.currentTarget.files[0];
+      if (!file) return;
+      const formData = new FormData();
+      formData.append('file', file);
+      try {
+        const response = await fetch('/api/user/profile-image', {
+          method: 'POST',
+          body: formData
+        });
+        const result = await response.json();
+        if (!response.ok || result.status !== 'success') {
+          throw new Error(result.message || 'Could not update the profile picture.');
+        }
+        const avatarImage = document.getElementById('profileAvatarImage');
+        avatarImage.src = result.profileImage;
+        avatarImage.hidden = false;
+        document.getElementById('avatarInitial').hidden = true;
+        showProfileMessage('Profile picture updated.');
+      } catch (error) {
+        console.error('Could not update profile picture:', error);
+        showProfileMessage(error.message || 'Could not update the profile picture.');
+      } finally {
+        event.currentTarget.value = '';
+      }
+    }
+
+    async function loadPreferences() {
+      try {
+        const response = await fetch('/api/user/preferences');
+        const result = await response.json();
+        if (!response.ok || result.status !== 'success') {
+          throw new Error(result.message || 'Could not load account preferences.');
+        }
+        document.getElementById('preferredLanguage').value = result.preferredLanguage;
+        document.getElementById('contentPreference').value = result.contentPreference;
+      } catch (error) {
+        console.error('Could not load account preferences:', error);
+        showProfileMessage(error.message || 'Could not load account preferences.');
+      }
+    }
+
+    function renderLibrary(containerId, items, emptyText) {
+      const container = document.getElementById(containerId);
+      container.replaceChildren();
+      if (!items.length) {
+        const empty = document.createElement('p');
+        empty.className = 'library-empty';
+        empty.textContent = emptyText;
+        container.append(empty);
+        return;
+      }
+      for (const item of items) {
+        const card = document.createElement('article');
+        card.className = 'media-card';
+        const thumb = document.createElement('div');
+        thumb.className = 'media-thumb';
+        const image = document.createElement('img');
+        image.src = item.poster || '/img/logo.png';
+        image.alt = '';
+        thumb.append(image);
+        const details = document.createElement('div');
+        details.className = 'media-details';
+        const title = document.createElement('div');
+        title.className = 'media-title';
+        title.textContent = item.title;
+        const meta = document.createElement('div');
+        meta.className = 'media-meta';
+        const mode = item.mode ? item.mode[0].toUpperCase() + item.mode.slice(1) : 'Story';
+        meta.textContent = item.mode ? `${mode} · StoryBeat ${item.beat}` : item.genre || 'Saved story';
+        details.append(title, meta);
+        card.append(thumb, details);
+        container.append(card);
+      }
+    }
+
+    async function loadLibrary() {
+      try {
+        const response = await fetch('/api/user/library');
+        const result = await response.json();
+        if (!response.ok || result.status !== 'success') {
+          throw new Error(result.message || 'Could not load your library.');
+        }
+        renderLibrary('watchHistoryGrid', result.items.filter(item => item.mode), 'Your reading and viewing history will appear here.');
+        renderLibrary('savedStoriesGrid', result.items.filter(item => item.saved), 'Stories you save will appear here.');
+      } catch (error) {
+        console.error('Could not load FictionFlix library:', error);
+        renderLibrary('watchHistoryGrid', [], error.message || 'Could not load your history.');
+        renderLibrary('savedStoriesGrid', [], error.message || 'Could not load your saved stories.');
+      }
+    }
+
+    loadPreferences();
+    loadLibrary();
+
+    async function saveDetails() {
+      const name = document.getElementById('inputName').value;
+      const email = document.getElementById('inputEmail').value;
+      const preferredLanguage = document.getElementById('preferredLanguage').value;
+      const contentPreference = document.getElementById('contentPreference').value;
+
+      try {
+        const response = await fetch('/update_profile', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ name: name, email: email })
+        });
+
+        const result = await response.json();
+        if (!response.ok || result.status !== 'success') {
+          throw new Error(result.message || 'Profile update failed.');
+        }
+
+        const preferencesResponse = await fetch('/api/user/preferences', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ preferredLanguage, contentPreference })
+        });
+        const preferencesResult = await preferencesResponse.json();
+        if (!preferencesResponse.ok || preferencesResult.status !== 'success') {
+          throw new Error(`Profile saved, but preferences could not be saved: ${preferencesResult.message || 'Please try again.'}`);
+        }
+
+        document.getElementById('displayUsername').textContent = name;
+        document.getElementById('displayEmail').textContent = email;
+        if (document.getElementById('profileAvatarImage').hidden) {
+          document.getElementById('avatarInitial').textContent = name.trim().charAt(0).toUpperCase();
+        }
+        showProfileMessage('Profile and preferences saved.');
+      } catch (error) {
+        console.error('Error:', error);
+        showProfileMessage(error.message || 'Could not save profile changes.');
+      }
+    }
+
+    async function logout() {
+      try {
+        const response = await fetch('/api/auth/logout', { method: 'POST' });
+        if (!response.ok) throw new Error('Sign out request failed.');
+        window.location.replace('/login');
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Could not sign out. Please try again.');
+      }
+    }
+
+  </script>
+</body>
+</html>

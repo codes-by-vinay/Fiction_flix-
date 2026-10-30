@@ -1,0 +1,4 @@
+.cardSave{width:28px;height:28px;display:grid;place-items:center;border:1px solid #ffffff29;border-radius:50%;background:#05050575;color:#fff}
+.card:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+.genreGrid button:disabled{cursor:default;opacity:.6}
+.videoExp .videoFrame.youtubeFrame{width:min(100%,900px);height:auto;aspect-ratio:16/9}

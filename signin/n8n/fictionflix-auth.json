@@ -1,0 +1,141 @@
+{
+  "name": "Fiction Flix Auth",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "fictionflix-auth",
+        "responseMode": "responseNode",
+        "options": {
+          "allowedOrigins": "http://localhost:5173"
+        }
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [0, 0],
+      "id": "93e571fa-1c83-45c9-874f-e91d32e74ff1",
+      "name": "FictionFlix Auth Webhook",
+      "webhookId": "9fc01322-4ed3-43da-9752-d786146881c7"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $json.body.action === 'signup' ? 'https://YOUR_PROJECT.supabase.co/auth/v1/signup' : 'https://YOUR_PROJECT.supabase.co/auth/v1/token?grant_type=password' }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "YOUR_SUPABASE_PUBLISHABLE_OR_ANON_KEY"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { email: $json.body.email, password: $json.body.password, ...($json.body.action === 'signup' ? { data: { full_name: $json.body.name } } : {}) } }}",
+        "options": {
+          "response": {
+            "response": {
+              "neverError": true
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [260, 0],
+      "id": "4a8df427-d631-429f-ab4c-5f2911398519",
+      "name": "Supabase Auth",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "const result = $input.first().json;\nconst request = $('FictionFlix Auth Webhook').first().json.body || {};\nconst user = result.user || (result.id ? result : null);\nconst token = result.access_token || result.session?.access_token || null;\nconst success = Boolean(user?.id) && !result.error && !result.msg && !result.error_description;\nconst awaitingEmailConfirmation = success && request.action === 'signup' && !token;\nconst errorMessage = result.error?.message || result.error_description || result.msg || result.message || (typeof result.error === 'string' ? result.error : null) || 'Authentication failed. Check the Supabase Auth node.';\n\nreturn [{\n  json: {\n    success,\n    message: success\n      ? (awaitingEmailConfirmation ? 'Account created. Check your email to verify your account before signing in.' : (request.action === 'signin' ? 'Welcome back.' : 'Account created successfully.'))\n      : errorMessage,\n    ...(user ? {\n      user: {\n        id: user.id,\n        name: user.user_metadata?.full_name || request.name || '',\n        email: user.email || request.email\n      }\n    } : {}),\n    ...(token ? { token } : {})\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [520, 0],
+      "id": "4a44f24e-c9df-476c-8f2c-268e6fc29513",
+      "name": "Format Auth Response"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "options": {
+          "responseCode": "={{ $json.success ? 200 : ($('FictionFlix Auth Webhook').first().json.body.action === 'signin' ? 401 : 400) }}",
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "http://localhost:5173"
+              },
+              {
+                "name": "Access-Control-Allow-Headers",
+                "value": "Content-Type, Authorization, apikey"
+              },
+              {
+                "name": "Access-Control-Allow-Methods",
+                "value": "POST, OPTIONS"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [780, 0],
+      "id": "099652aa-84d5-4cbb-99b6-8f24f75c12c5",
+      "name": "Return Auth Response"
+    }
+  ],
+  "connections": {
+    "FictionFlix Auth Webhook": {
+      "main": [
+        [
+          {
+            "node": "Supabase Auth",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase Auth": {
+      "main": [
+        [
+          {
+            "node": "Format Auth Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Auth Response": {
+      "main": [
+        [
+          {
+            "node": "Return Auth Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "192f20f2-c125-4cce-a1a2-ce13ff2bb1e2",
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "tags": []
+}

@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f2efe8">
+    <meta name="description" content="A simple FictionFlix account sign-in demo.">
+    <title>Account access | FictionFlix</title>
+    <link rel="stylesheet" href="/styles.css">
+    <script src="/app.js" defer></script>
+  </head>
+  <body>
+    <main class="shell">
+      <section class="art-panel" aria-label="FictionFlix account">
+        <a class="wordmark" href="/" aria-label="FictionFlix home"><span class="mark">F</span> FICTIONFLIX</a>
+        <div class="art-copy">
+          <p class="eyebrow">ONE STORY. MULTIPLE WAYS.</p>
+          <h1>Your next story<br>starts here.</h1>
+          <p>Sign in to keep your FictionFlix experience close.</p>
+        </div>
+        <span class="art-index">ACCOUNT ACCESS <i>01 / 01</i></span>
+      </section>
+
+      <section class="form-panel">
+        <div class="form-wrap">
+          <div id="auth-view">
+            <p class="eyebrow">YOUR FICTIONFLIX ACCOUNT</p>
+            <h2 id="form-title">Welcome back</h2>
+            <p class="intro" id="form-intro">Sign in to continue where your story left off.</p>
+
+            <div class="mode-switch" role="group" aria-label="Account action">
+              <button type="button" class="mode-button is-active" data-mode="login" aria-pressed="true">Sign in</button>
+              <button type="button" class="mode-button" data-mode="signup" aria-pressed="false">Create account</button>
+            </div>
+
+            <form id="auth-form" novalidate>
+              <label for="email">Email address</label>
+              <input id="email" name="email" type="email" autocomplete="email" placeholder="you@example.com" required maxlength="254">
+
+              <div class="password-label">
+                <label for="password">Password</label>
+                <span>8 characters minimum</span>
+              </div>
+              <input id="password" name="password" type="password" autocomplete="current-password" placeholder="Enter your password" required minlength="8" maxlength="72">
+
+              <p class="message" id="message" role="status" aria-live="polite"></p>
+              <button class="submit-button" id="submit-button" type="submit">Sign in <span aria-hidden="true">→</span></button>
+            </form>
+            <p class="fine-print">By continuing, you agree to use this demo responsibly.</p>
+          </div>
+
+          <div id="signed-in-view" hidden>
+            <p class="eyebrow">SESSION ACTIVE</p>
+            <h2>You’re signed in.</h2>
+            <p class="intro">Your account is ready.</p>
+            <p class="account-email" id="account-email"></p>
+            <button class="submit-button" id="logout-button" type="button">Sign out <span aria-hidden="true">↗</span></button>
+            <p class="message" id="session-message" role="status" aria-live="polite"></p>
+          </div>
+        </div>
+        <footer><span>FICTIONFLIX</span><span>ACCOUNT PORTAL</span></footer>
+      </section>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#07080a">
+  <title>Sign in — FictionFlix</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #07080a;
+      color: #fff;
+      --muted: #9a9ab0;
+      --red: #e50914;
+      --card: #12141a;
+      --border: rgba(255, 255, 255, .1);
+    }
+    * { box-sizing: border-box; }
+    body {
+      min-height: 100vh;
+      margin: 0;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      background: radial-gradient(ellipse at 15% 15%, rgba(229, 9, 20, .16), transparent 42%), #07080a;
+    }
+    .auth-card {
+      width: min(100%, 440px);
+      padding: 38px;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: var(--card);
+      box-shadow: 0 24px 80px rgba(0, 0, 0, .4);
+    }
+    .brand { margin-bottom: 34px; color: var(--red); font-size: 14px; font-weight: 900; letter-spacing: 2px; }
+    .brand span { color: #fff; }
+    .eyebrow { margin: 0 0 8px; color: var(--red); font-size: 11px; font-weight: 800; letter-spacing: 1.5px; }
+    h1 { margin: 0; font-size: 30px; }
+    .intro { margin: 8px 0 24px; color: var(--muted); font-size: 14px; line-height: 1.5; }
+    .mode-switch { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin-bottom: 22px; padding: 4px; border: 1px solid var(--border); border-radius: 10px; }
+    .mode-button { padding: 10px; border: 0; border-radius: 7px; background: transparent; color: var(--muted); font: inherit; cursor: pointer; }
+    .mode-button[aria-pressed="true"] { background: rgba(255, 255, 255, .08); color: #fff; }
+    .field { margin: 0 0 17px; }
+    .field small { color: var(--muted); font-size: 11px; font-weight: 400; }
+    .field-error { margin: 6px 0 0; color: #ff858a; font-size: 12px; }
+    label { display: block; margin-bottom: 7px; font-size: 13px; font-weight: 650; }
+    input { width: 100%; padding: 12px 13px; border: 1px solid var(--border); border-radius: 9px; outline: none; background: #090a0e; color: #fff; font: inherit; }
+    input:focus { border-color: var(--red); box-shadow: 0 0 0 3px rgba(229, 9, 20, .16); }
+    .hint { float: right; color: var(--muted); font-size: 11px; font-weight: 400; }
+    .message { min-height: 21px; margin: 0 0 10px; color: #ff858a; font-size: 13px; }
+    .message.success { color: #acd9b7; }
+    .submit-button { width: 100%; padding: 13px; border: 0; border-radius: 9px; background: var(--red); color: #fff; font: inherit; font-weight: 750; cursor: pointer; }
+    .resend-button { width: 100%; margin-top: 12px; padding: 10px; border: 1px solid var(--border); border-radius: 9px; background: transparent; color: #fff; font: inherit; cursor: pointer; }
+    .submit-button:hover { background: #ff1e27; }
+    .submit-button:disabled { cursor: wait; opacity: .65; }
+    .footnote { margin: 22px 0 0; color: var(--muted); font-size: 11px; line-height: 1.5; text-align: center; }
+    [hidden] { display: none !important; }
+    @media (max-width: 480px) { .auth-card { padding: 28px 22px; } }
+  </style>
+</head>
+<body>
+  <main class="auth-card">
+    <div class="brand">F<span>ICTION</span>FLIX</div>
+    <p class="eyebrow">YOUR FICTIONFLIX ACCOUNT</p>
+    <h1 id="formTitle">Welcome back</h1>
+    <p class="intro" id="formIntro">Sign in to continue where your story left off.</p>
+
+    <div class="mode-switch" role="group" aria-label="Account action">
+      <button class="mode-button" type="button" data-mode="login" aria-pressed="true">Sign in</button>
+      <button class="mode-button" type="button" data-mode="signup" aria-pressed="false">Create account</button>
+    </div>
+
+    <form id="authForm" autocomplete="off" novalidate>
+      <div class="field" id="nameField" hidden>
+        <label for="name">Full name</label>
+        <input id="name" name="name" type="text" autocomplete="name" maxlength="80">
+        <p class="field-error" id="nameError" aria-live="polite"></p>
+      </div>
+      <div class="field" id="ownerSetupTokenField" hidden>
+        <label for="ownerSetupToken">Owner setup token <small>Only for the site owner</small></label>
+        <input id="ownerSetupToken" name="ownerSetupToken" type="password" autocomplete="off">
+      </div>
+      <div class="field">
+        <label for="email">Email address</label>
+        <input id="email" name="email" type="email" autocomplete="email" maxlength="254" required>
+        <p class="field-error" id="emailError" aria-live="polite"></p>
+      </div>
+      <div class="field">
+        <label for="password">Password <span class="hint" id="passwordHint">At least 8 characters</span></label>
+        <input id="password" name="password" type="password" autocomplete="current-password" minlength="8" maxlength="128" required>
+        <p class="field-error" id="passwordError" aria-live="polite"></p>
+      </div>
+      <p class="message" id="message" role="status" aria-live="polite"></p>
+      <button class="submit-button" id="submitButton" type="submit">Sign in</button>
+    </form>
+    <button class="resend-button" id="resendVerificationButton" type="button" hidden>Resend verification email</button>
+    <p class="footnote">Your password is securely hashed and never stored as plain text.</p>
+  </main>
+  <script>
+    const form = document.getElementById('authForm');
+    const nameField = document.getElementById('nameField');
+    const nameInput = document.getElementById('name');
+    const ownerSetupTokenField = document.getElementById('ownerSetupTokenField');
+    const ownerSetupTokenInput = document.getElementById('ownerSetupToken');
+    const nameError = document.getElementById('nameError');
+    const emailInput = document.getElementById('email');
+    const password = document.getElementById('password');
+    const message = document.getElementById('message');
+    const emailError = document.getElementById('emailError');
+    const passwordError = document.getElementById('passwordError');
+    const submitButton = document.getElementById('submitButton');
+    const resendVerificationButton = document.getElementById('resendVerificationButton');
+    let mode = 'login';
+    const emailRegex =
+      /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+$/;
+
+    document.querySelectorAll('.mode-button').forEach((button) => {
+      button.addEventListener('click', () => {
+        mode = button.dataset.mode;
+        const signup = mode === 'signup';
+        document.querySelectorAll('.mode-button').forEach((item) => {
+          item.setAttribute('aria-pressed', String(item === button));
+        });
+        nameField.hidden = !signup;
+        ownerSetupTokenField.hidden = !signup;
+        nameInput.required = signup;
+        if (signup) {
+          nameInput.value = '';
+          ownerSetupTokenInput.value = '';
+          emailInput.value = '';
+          password.value = '';
+        }
+        nameInput.autocomplete = signup ? 'off' : 'name';
+        emailInput.autocomplete = signup ? 'off' : 'email';
+        password.autocomplete = signup ? 'new-password' : 'current-password';
+        document.getElementById('formTitle').textContent = signup ? 'Create your account' : 'Welcome back';
+        document.getElementById('formIntro').textContent = signup
+          ? 'Join FictionFlix and keep your stories in one place.'
+          : 'Sign in to continue where your story left off.';
+        document.getElementById('passwordHint').textContent = signup
+          ? '8–128 characters; symbols allowed'
+          : '';
+        submitButton.textContent = signup ? 'Create account' : 'Sign in';
+        message.textContent = '';
+        nameError.textContent = '';
+        emailError.textContent = '';
+        passwordError.textContent = '';
+      });
+    });
+
+    resendVerificationButton.addEventListener('click', async () => {
+      resendVerificationButton.disabled = true;
+      try {
+        const response = await fetch('/api/auth/verify-email/resend', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: emailInput.value.trim() })
+        });
+        const result = await response.json();
+        if (!response.ok || result.status !== 'success') {
+          throw new Error(result.message || 'Could not resend the verification email.');
+        }
+        message.textContent = result.message;
+        message.className = 'message success';
+      } catch (error) {
+        message.textContent = error.message || 'Could not resend the verification email.';
+        message.className = 'message';
+      } finally {
+        resendVerificationButton.disabled = false;
+      }
+    });
+
+    const verificationStatus = new URLSearchParams(window.location.search).get('verification');
+    if (verificationStatus === 'success') {
+      message.textContent = 'Email verified. You can now sign in.';
+      message.className = 'message success';
+    } else if (verificationStatus === 'invalid') {
+      message.textContent = 'This verification link is invalid or expired. Sign in to request another link.';
+      message.className = 'message';
+    }
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      message.textContent = '';
+      nameError.textContent = '';
+      emailError.textContent = '';
+      passwordError.textContent = '';
+      const email = emailInput.value.trim();
+      const passwordValue = password.value;
+      let isValid = true;
+      if (!emailRegex.test(email) || email.length > 254) {
+        emailError.textContent = 'कृपया सही Email Address डालें।';
+        isValid = false;
+      }
+      if (mode === 'signup' && (!nameInput.value.trim() || nameInput.value.trim().length > 80)) {
+        nameError.textContent = 'Name must be between 1 and 80 characters.';
+        isValid = false;
+      }
+      if (passwordValue.length < 8 || passwordValue.length > 128) {
+        passwordError.textContent = 'Password 8 से 128 characters के बीच होना चाहिए।';
+        isValid = false;
+      }
+      if (!isValid) return;
+
+      submitButton.disabled = true;
+      submitButton.textContent = mode === 'signup' ? 'Creating account…' : 'Signing in…';
+
+      const body = {
+        email,
+        password: passwordValue
+      };
+      if (mode === 'signup') {
+        body.name = nameInput.value;
+        body.ownerSetupToken = ownerSetupTokenInput.value;
+      }
+
+      try {
+        const response = await fetch(`/api/auth/${mode}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body)
+        });
+        const result = await response.json();
+        if (!response.ok || result.status !== 'success') {
+          message.textContent = result.message || 'Could not authenticate. Please try again.';
+          if (result.code === 'email_not_verified' || result.code === 'verification_email_unavailable' || result.code === 'verification_email_failed') {
+            resendVerificationButton.hidden = false;
+          }
+          return;
+        }
+        if (mode === 'signup') {
+          document.querySelector('[data-mode="login"]').click();
+          message.textContent = result.message;
+          message.className = 'message success';
+          resendVerificationButton.hidden = false;
+          return;
+        }
+        const dashboardByRole = {
+          member: '/dashboard/member',
+          team: '/dashboard/team',
+          owner: '/dashboard/owner',
+          admin: '/dashboard/admin'
+        };
+        window.location.assign(dashboardByRole[result.user?.role] || '/');
+      } catch (error) {
+        console.error('Authentication request failed:', error);
+        message.textContent = 'Could not connect to the server. Please try again.';
+      } finally {
+        submitButton.disabled = false;
+        submitButton.textContent = mode === 'signup' ? 'Create account' : 'Sign in';
+      }
+    });
+  </script>
+</body>
+</html>

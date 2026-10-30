@@ -1,0 +1,15 @@
+{
+  "name":"FictionFlix",
+  "short_name":"FictionFlix",
+  "description":"One Story. Multiple Ways to Experience It.",
+  "start_url":"/",
+  "scope":"/",
+  "display":"standalone",
+  "orientation":"portrait-primary",
+  "background_color":"#050505",
+  "theme_color":"#050505",
+  "lang":"hi",
+  "icons":[
+    {"src":"/assets/fictionflix-logo.png","sizes":"512x512","type":"image/png","purpose":"any maskable"}
+  ]
+}

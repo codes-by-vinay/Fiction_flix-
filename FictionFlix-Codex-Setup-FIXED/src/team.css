@@ -1,0 +1,18 @@
+.teamPanel{overflow:hidden}
+.teamInviteForm{display:flex;gap:10px;padding:18px 19px 8px}
+.teamInviteForm input{flex:1;min-width:0;min-height:38px;padding:0 12px;border:1px solid var(--cms-line);border-radius:5px;background:#09090a;color:#f8f8f5;font-size:11px}
+.teamInviteForm input:focus{outline:1px solid #ef1833}
+.teamHelp{margin:0;padding:0 19px 15px;color:#8b8c93;font-size:10px;line-height:1.5}
+.teamTableWrap{overflow-x:auto}
+.teamPanel .showTable{min-width:540px}
+.teamPanel .showTable td strong,.teamPanel .showTable td small{display:block}
+.teamPanel .showTable td strong{color:#f1f1f1;font-size:11px;font-weight:650}
+.teamPanel .showTable td small{margin-top:4px;color:#85858c;font-size:9px}
+.teamPanel .showTable td:last-child{width:150px}
+.teamPanel .showTable select{min-height:30px;padding:0 8px;border:1px solid var(--cms-line);border-radius:4px;background:#101113;color:#e8e8e8;font-size:10px}
+.ownerSetupForm{display:grid;gap:10px;margin-top:22px;padding-top:18px;border-top:1px solid var(--cms-line)}
+.ownerSetupForm label{color:#c5c5ca;font-size:11px;line-height:1.5}
+.ownerSetupForm input{min-height:38px;padding:0 11px;border:1px solid var(--cms-line);border-radius:5px;background:#09090a;color:#f8f8f5;font:inherit}
+.ownerSetupForm .cmsPrimary{justify-self:start}
+.adminGateError{margin:0;color:#ff9da4;font-size:12px}
+@media(max-width:540px){.teamInviteForm{align-items:stretch;flex-direction:column}.teamInviteForm .cmsPrimary{align-self:flex-start}}

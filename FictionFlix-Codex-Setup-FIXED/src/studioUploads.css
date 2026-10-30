@@ -1,0 +1,7 @@
+.showEditor .editorFields textarea{width:100%;resize:vertical;border:1px solid var(--cms-line);border-radius:4px;background:#090a0b;color:#f4f4f1;padding:10px;font:inherit;font-size:11px;line-height:1.55}
+.showEditor .editorFields textarea:focus,.showEditor .editorFields input:focus{outline:2px solid #e8b84d66;outline-offset:1px}
+.showEditor .editorFields .assetField{display:grid;gap:8px}
+.showEditor .assetField input[type=file]{min-height:38px;padding:6px;color:#c6c6ca}
+.showEditor .assetField small{color:#8f8f96;font-size:9px;line-height:1.5}
+.showEditor .editorFields .bookContentInput{min-height:190px}
+.showEditor .editorFields input:disabled,.showEditor button:disabled{cursor:wait;opacity:.65}
